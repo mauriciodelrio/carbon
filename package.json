@@ -1,0 +1,39 @@
+{
+  "name": "carbon",
+  "version": "0.0.0",
+  "description": "Carbon",
+  "main": "index.js",
+  "author": "Carbon",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "coffeescript": "^2.2.0",
+    "coffee-script": "^1.12.7",
+    "compression": "^1.7.1",
+    "config": "^1.28.1",
+    "connect": "^3.6.5",
+    "connect-redis": "^3.3.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.1",
+    "express-session": "^1.15.6",
+    "ip": "^1.1.5",
+    "lodash": "^4.17.4",
+    "maxmind": "^0.6.0",
+    "method-override": "^2.3.10",
+    "moment": "^2.18.1",
+    "node-cron": "^1.2.1",
+    "nodemailer": "^4.1.3",
+    "passport": "^0.4.0",
+    "pm2": "^2.7.1",
+    "raven": "^2.2.1",
+    "redis": "^2.8.0",
+    "request": "^2.83.0"
+  },
+  "scripts": {
+    "start": "npm install && npm run-script compile-coffee && npm run-script && npm run-script start-app",
+    "compile-coffee": "./node_modules/coffeescript/bin/coffee -c -o public/assets/js src",
+    "compile-coffee-watch": "./node_modules/coffeescript/bin/coffee -wco public/assets/js src",
+    "start-app": "pm2 --no-daemon start pm2/production.json"
+  }
+}
