@@ -1,0 +1,29 @@
+{
+  "apps" : [{
+    "name"        : "Carbon",
+    "script"      : "./app.coffee",
+    "watch"       : true,
+    "ignore_watch" : ["node_modules", "public", ".git"],
+    "cwd"         : "./",
+    "instances"   : 1,
+    "exec_interpreter" : "./node_modules/.bin/coffee"
+  },
+  {
+    "name"        : "crons",
+    "script"      : "./cron.coffee",
+    "watch"       : false,
+    "ignore_watch" : ["node_modules", "public", ".git", "dump.rdb"],
+    "cwd"         : "./",
+    "instances"   : 1,
+    "exec_interpreter" : "./node_modules/.bin/coffee"
+  },
+  {
+    "name"        : "login-queue",
+    "script"      : "./login-queue.coffee",
+    "watch"       : true,
+    "ignore_watch" : ["node_modules", "public", ".git"],
+    "cwd"         : "./",
+    "instances"   : 1,
+    "exec_interpreter" : "./node_modules/.bin/coffee"
+  }]
+}
