@@ -22,9 +22,11 @@ ROUTES =
   api:
     hola_mundo: require("#{modulePath}/api/hola_mundo")().index
     users: require("#{modulePath}/api/users")().index
+    institutions: require("#{modulePath}/api/institutions")().index
 #API
 router.get '/teams', [], ROUTES.api.hola_mundo
 router.get '/users/all', [], ROUTES.api.users
+router.get '/institutions/all', [], ROUTES.api.institutions 
 app.use '/', router
 # App
 app.listen 7070, -> console.log 'Backend running on port 7070! http://localhost:7070'
