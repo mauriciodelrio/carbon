@@ -1,0 +1,32 @@
+{
+  "apps" : [{
+    "name"        : "Carbon",
+    "script"      : "./app.coffee",
+    "watch"       : "false",
+    "cwd"         : "./",
+    "instances"   : 0,
+    "exec_mode"   : "cluster",
+    "error_file"  : "/var/log/nodejs/ott-error.log",
+    "out_file"    : "/var/log/nodejs/ott-out.log",
+    "exec_interpreter" : "./node_modules/.bin/coffee"
+  },
+  {
+    "name"        : "crons",
+    "script"      : "./cron.coffee",
+    "watch"       : false,
+    "ignore_watch" : ["node_modules", "public", ".git", "dump.rdb"],
+    "cwd"         : "./",
+    "instances"   : 1,
+    "exec_interpreter" : "./node_modules/.bin/coffee"
+  },
+  {
+    "name"        : "backend-WSO-login-queue",
+    "script"      : "./login-queue.coffee",
+    "watch"       : "false",
+    "cwd"         : "./",
+    "instances"   : 1,
+    "exec_mode"   : "cluster",
+    "error_file"  : "/var/log/nodejs/ott-login-error.log",
+    "out_file"    : "/var/log/nodejs/ott-login-out.log"
+  }]
+}
