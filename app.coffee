@@ -34,14 +34,14 @@ ROUTES =
     signin: require("#{modulePath}/api/user")().signin
     students: require("#{modulePath}/api/user")().all_students
     create_student: require("#{modulePath}/api/user")().create_student
-    administradores: require("#{modulePath}/api/user")().all_admins
+    administrators: require("#{modulePath}/api/user")().all_admins
     create_administrator: require("#{modulePath}/api/user")().create_administrator
     create_editor: require("#{modulePath}/api/user")().create_editor
 
 #API
 router.get '/users/all', [], ROUTES.api.users
 router.get '/users/students/all', [], ROUTES.api.students
-router.get '/users/administradores/todos',[],ROUTES.api.administradores
+router.get '/users/admin/all',[],ROUTES.api.administrators
 router.get '/api/users/:user_id', [MIDDLEWARE.AUTH, MIDDLEWARE.USER_INFO], ROUTES.api.user_by_id
 router.post '/api/signin', [], ROUTES.api.signin
 router.post '/api/student/new', [], ROUTES.api.create_student
