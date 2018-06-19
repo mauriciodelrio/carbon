@@ -59,7 +59,6 @@ class User
 
   get_user_by_mail: (client, params, cb) ->
     query = client.query "SELECT * FROM public.\"User\" as U INNER JOIN public.\"Institution\" as I ON U.institution_id = I.institution_id WHERE U.user_mail = '#{params.mail}' AND U.user_password = '#{params.password}'", (err, res) ->
-      console.log res.rows
       if not err
         cb? res.rows
       else
@@ -117,7 +116,30 @@ class User
         cb? res.rows[0]
       else
         console.error err
+
+  get_user_session: (client, session_id, user_id, cb) ->
+    query = client.query "SELECT * FROM public.\"Session\" as S WHERE S.user_id = '#{user_id}' AND S.session_id = '#{session_id}'", (err, res) ->
+      if not err
+        cb? res.rows[0]
+      else
+        console.error err
+        cb? err
+
+  count_sessions: (client, user_id, cb) ->
+    query = client.query "SELECT COUNT(user_id) FROM public.\"Session\" as S WHERE S.user_id = '#{user_id}'", (err, res) ->
+      if not err
+        cb? res.rows[0]
+      else
+        console.error err
+        cb? err
   
+  clean_old_sessions_user: (client, user_id, session_id, cb) ->
+    query = client.query "UPDATE public.\"Session\" SET session_state = #{false} WHERE user_id = '#{user_id}' AND session_id != '#{session_id}' RETURNING *", (err, res) ->
+      if not err
+        console.log "not error clean sessions"
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
   clean_old_sessions: (client, user_id, cb) ->
     date_now = moment().format("YYYY-MM-DD HH:mm")
     query = client.query "UPDATE public.\"Session\" SET session_state = #{false} WHERE session_expired_at < '#{date_now}' RETURNING *", (err, res) ->

@@ -35,18 +35,21 @@ module.exports = () ->
           if user[0]?.user_id
             #limpiar sesiones anteriores acá
             console.log "user 0 0000 0 0 0 0 0 ", user[0]
-            User.clean_old_sessions client, user[0].user_id, (resp) ->
-              if resp.status is 'OK' and resp.data?
-                console.log resp
-              else
-                console.error resp
             Session.set user[0].user_id, {}, req, true, (session_id) ->
               if session_id?
+                User.clean_old_sessions_user client, user[0].user_id, session_id, (resp) ->
+                  if resp.status is 'OK' and resp.data?
+                    console.log resp
+                  else
+                    console.error resp
                 console.log "---- Seteo su session ----", session_id
                 Cache.set "user:#{user.user_id}", user[0], (cache_user) ->
                   console.log "---- entro a Cache ----", cache_user
                   res.locals.USER = user[0]
-                  res.send status: 'OK', data: user[0]
+                  User.count_sessions client, user[0].user_id, (result) ->
+                    console.log "cantidad de sesiones", result
+                  User.get_user_session client, session_id, user[0].user_id, (session) ->
+                    res.send status: 'OK', data: {user: res.locals.USER, session: session}
               else
                 console.error "EMPTY RESPONSE SESSION"
                 res.send status: 'ERROR', data: "LOGIN ERROR"
