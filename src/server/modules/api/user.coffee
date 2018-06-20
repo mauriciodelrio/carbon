@@ -1,4 +1,5 @@
 User = new (require('../../lib/pgconn').User)()
+Institution = new (require('../../lib/pgconn').Institution)()
 Cache = new (require('../../lib/cache'))()
 Session = new (require('../../lib/session'))()
 _ = require 'lodash'
@@ -42,6 +43,12 @@ module.exports = () ->
                     console.log resp
                   else
                     console.error resp
+                Institution.connect (client) ->
+                  Institution.get_points_in_institution client, '1', (points) ->
+                    if points.status is 'OK' and points.data?
+                      Institution.set_points_in_institution client, '1', points.data.sum, (resp_points) ->
+                    else
+                      console.error resp
                 console.log "---- Seteo su session ----", session_id
                 Cache.set "user:#{user.user_id}", user[0], (cache_user) ->
                   console.log "---- entro a Cache ----", cache_user

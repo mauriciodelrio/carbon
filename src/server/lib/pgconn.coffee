@@ -149,5 +149,47 @@ class User
       else
         console.error err
 
+class Institution
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  hash: (length = 32) ->
+    charset = ''
+    Array.apply(0, Array(length)).map( ->
+      ((charset) -> charset.charAt Math.floor(Math.random() * charset.length)) 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    ).join ''
+
+  get_institutions: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"Institution\" ", (err, res) ->
+      if not err
+        cb? res.rows[0]
+      else
+        console.error err
+        cb? err
+  
+  get_points_in_institution: (client, params, cb) ->
+    query = client.query "SELECT SUM(student_files_uploaded) FROM public.\"Student\" WHERE institution_id = '#{params}'", (err, res) ->
+      if not err
+        console.log "points by institution", res.rows
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
+        cb? err
+
+  set_points_in_institution: (client, ins_id, points, cb) ->
+    query = client.query "UPDATE public.\"Institution\" SET institution_points = #{points} WHERE institution_id = '#{ins_id}' RETURNING *", (err, res) ->
+      if not err
+        console.log "set points by institution", res.rows
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
+        cb? err
+
 module.exports =
   User: User
+  Institution: Institution
