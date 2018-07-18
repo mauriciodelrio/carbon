@@ -167,7 +167,7 @@ class Institution
   get_institutions: (client, cb) ->
     query = client.query "SELECT * FROM public.\"Institution\" ", (err, res) ->
       if not err
-        cb? res.rows[0]
+        cb? res.rows
       else
         console.error err
         cb? err
@@ -190,6 +190,205 @@ class Institution
         console.error err
         cb? err
 
+class Career
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_careers: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"Career\" ", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+  
+  get_careers_by_departament: (client, params, cb) ->
+    query = client.query "SELECT * FROM public.\"Career\" WHERE departament_id = '#{params}'", (err, res) ->
+      if not err
+        console.log "careers by depts", res.rows
+        cb? {status: 'OK', data: res.rows}
+      else
+        console.error err
+        cb? err
+
+class Departament
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_departaments: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"Departament\" ", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+  
+  get_departaments_by_institution: (client, params, cb) ->
+    query = client.query "SELECT * FROM public.\"Departament\" WHERE institution_id = '#{params}'", (err, res) ->
+      if not err
+        console.log "depts by institution", res.rows
+        cb? {status: 'OK', data: res.rows}
+      else
+        console.error err
+        cb? err
+
+class Course
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_courses: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"Course\" ", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+  
+  get_courses_by_career: (client, params, cb) ->
+    query = client.query "SELECT * FROM public.\"Course\" WHERE career_id = '#{params}'", (err, res) ->
+      if not err
+        console.log "course by career", res.rows
+        cb? {status: 'OK', data: res.rows}
+      else
+        console.error err
+        cb? err
+
+class Category
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_categories: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"Category\" ", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+  new_category: (client, params, cb) ->
+    id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    query = client.query "INSERT INTO public.\"Category\" (category_id, category_name) VALUES ('#{id}', '#{params}') RETURNING *", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+class Keyword
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_keywords: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"Keyword\" ", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+  
+  new_keyword: (client, params, cb) ->
+    id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    query = client.query "INSERT INTO public.\"Keyword\" (keyword_id, keyword_name) VALUES ('#{id}', '#{params}') RETURNING *", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+class Typematerial
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_typematerials: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"Typematerial\" ", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+  new_typematerial: (client, params, cb) ->
+    id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    query = client.query "INSERT INTO public.\"Typematerial\" (typematerial_id, typematerial_name) VALUES ('#{id}', '#{params}') RETURNING *", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+class Mimetype #no añadiremos nada acá, solamente leeremos los tipos soportados
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_mimetypes: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"Mimetype\" ", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+class State #no añadiremos nada acá, solamente leeremos los estados soportados
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_states: (client, cb) ->
+    query = client.query "SELECT * FROM public.\"State\" ", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+
 module.exports =
   User: User
   Institution: Institution
+  Career: Career
+  Course: Course
+  Departament: Departament
+  Category: Category
+  Keyword: Keyword
+  Typematerial: Typematerial
+  Mimetype: Mimetype
+  State: State

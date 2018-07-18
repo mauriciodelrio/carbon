@@ -1,9 +1,7 @@
-User = new (require('../../lib/pgconn').User)()
 Institution = new (require('../../lib/pgconn').Institution)()
-Cache = new (require('../../lib/cache'))()
-Session = new (require('../../lib/session'))()
 _ = require 'lodash'
 moment = require 'moment'
+
 module.exports = () ->
 
   all_institutions: (req, res) ->
