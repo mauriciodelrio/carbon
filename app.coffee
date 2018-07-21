@@ -32,9 +32,11 @@ ROUTES =
     users: require("#{modulePath}/api/user")().all_users
     user_by_id: require("#{modulePath}/api/user")().user_id
     signin: require("#{modulePath}/api/user")().signin
+    signout: require("#{modulePath}/api/user")().signout
     students: require("#{modulePath}/api/user")().all_students
     create_student: require("#{modulePath}/api/user")().create_student
     administrators: require("#{modulePath}/api/user")().all_admins
+    editors: require("#{modulePath}/api/user")().all_editors
     create_administrator: require("#{modulePath}/api/user")().create_administrator
     create_editor: require("#{modulePath}/api/user")().create_editor
     get_courses_by_career: require("#{modulePath}/api/course")().get_courses_by_career
@@ -51,13 +53,14 @@ ROUTES =
     all_typematerials: require("#{modulePath}/api/typematerial")().all_typematerials
     all_mimetypes: require("#{modulePath}/api/mimetype")().all_mimetypes
     all_states: require("#{modulePath}/api/state")().all_states
+    type_user: require("#{modulePath}/api/user")().type_user
 
 #API
 router.get '/api/departaments/:ins_id', [], ROUTES.api.get_departaments_by_institution
 router.get '/api/careers/:departament_id', [], ROUTES.api.get_careers_by_departament
 router.get '/api/courses/:career_id', [], ROUTES.api.get_courses_by_career
 router.get '/api/users/:user_id', [MIDDLEWARE.AUTH, MIDDLEWARE.USER_INFO], ROUTES.api.user_by_id
-
+router.get '/api/users/:user_id/type', [], ROUTES.api.type_user
 router.get '/api/institutions/all', ROUTES.api.all_institutions
 router.get '/api/departaments/all', [], ROUTES.api.all_departaments
 router.get '/api/courses/all', [], ROUTES.api.all_courses
@@ -70,10 +73,12 @@ router.get '/api/typematerials/all', [], ROUTES.api.all_typematerials
 router.get '/api/users/all', [], ROUTES.api.users
 router.get '/api/users/admin/all',[],ROUTES.api.administrators
 router.get '/api/users/students/all', [], ROUTES.api.students
+router.get '/api/users/editors/all', [], ROUTES.api.editors
 
 router.get '/api/institution/:ins_id/points', ROUTES.api.get_points_institution
 router.post '/api/institutions/:ins_id/points/set', ROUTES.api.set_points_institution
 router.post '/api/signin', [], ROUTES.api.signin
+router.post '/api/signout', [], ROUTES.api.signout
 router.post '/api/student/new', [], ROUTES.api.create_student
 router.post '/api/administrator/new', [], ROUTES.api.create_administrator
 router.post '/api/editor/new', [], ROUTES.api.create_editor

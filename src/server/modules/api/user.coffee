@@ -10,6 +10,23 @@ module.exports = () ->
       User.get_users client, (response) ->
         res.send status: 'OK', data: response
   
+  type_user: (req, res) ->
+    User.connect (client) ->
+      User.get_admin_by_id client, req.params.user_id, (response) ->
+        if response.status is 'OK' and response?.data
+          res.send status: 'OK', data: response.data
+        else
+          User.get_editor_by_id client, req.params.user_id, (response2) ->
+            if response2.status is 'OK' and response2?.data
+              res.send status: 'OK', data: response2.data
+            else
+              User.get_student_by_id client, req.params.user_id, (response3) ->
+                if response3.status is 'OK' and response3?.data
+                  res.send status: 'OK', data: response3.data
+                else
+                  res.send status:'ERROR', data: response3.data
+
+
   all_students: (req, res) ->
     User.connect (client) ->
       User.get_students client, (response) ->
@@ -17,8 +34,13 @@ module.exports = () ->
 
   all_admins: (req, res)->
     User.connect (client) ->
-        User.get_admins client, (response) ->
-          res.send status: 'OK', data: response
+      User.get_admins client, (response) ->
+        res.send status: 'OK', data: response
+  
+  all_editors: (req, res)->
+    User.connect (client) ->
+      User.get_editors client, (response) ->
+        res.send status: 'OK', data: response
 
   user_id: (req, res) ->
     User.connect (client) ->
@@ -65,6 +87,16 @@ module.exports = () ->
             res.send status: 'ERROR', data: "USER NOT FOUND"
     else
       console.error "LOGIN_ERROR"
+
+  signout: (req, res) ->
+    if req.session?.user_id
+      console.log 'entro al if de signout'
+      Cache.del "user:#{req.session.user_id}", () -> 
+        Session.clear req, () ->
+          console.log "redirect"
+          res.send status: 'OK', data: null
+    else 
+      res.send status: 'OK', data: null
 
   create_administrator: (req, res) ->
     console.log "req body admin", req.body

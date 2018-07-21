@@ -29,6 +29,14 @@ class User
         console.error err
         cb? err
 
+  get_editors: (client, cb) ->
+    query = client.query 'SELECT * FROM public."Editor" as E', (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
   get_admins: (client, cb) ->
     query = client.query 'SELECT * FROM public."Administrator" as A', (err, res) ->
       if not err
@@ -56,6 +64,27 @@ class User
         cb? res.rows
       else
         cb? err
+
+  get_student_by_id: (client, params, cb) -> #revisar esta funcion y queries
+    query = client.query "SELECT * FROM public.\"Student\" as S WHERE S.user_id = '#{params}'", (err, res) ->
+      if not err and res.rows.length > 0
+        cb? {status: 'OK', data: {info: res.rows[0], type: 'student'}}
+      else
+        cb? {status: 'ERROR', data: err}
+
+  get_editor_by_id: (client, params, cb) -> #revisar esta funcion y queries
+    query = client.query "SELECT * FROM public.\"Editor\" as E WHERE E.user_id = '#{params}'", (err, res) ->
+      if not err and res.rows.length > 0
+        cb? {status: 'OK', data: {info: res.rows[0], type: 'editor'}}
+      else
+        cb? {status: 'ERROR', data: err}
+
+  get_admin_by_id: (client, params, cb) -> #revisar esta funcion y queries
+    query = client.query "SELECT * FROM public.\"Administrator\" as A WHERE A.user_id = '#{params}'", (err, res) ->
+      if not err and res.rows.length > 0
+        cb? {status: 'OK', data: {info: res.rows[0], type: 'administrator'}}
+      else
+        cb? {status: 'ERROR', data: err}
 
   get_user_by_mail: (client, params, cb) ->
     query = client.query "SELECT * FROM public.\"User\" as U INNER JOIN public.\"Institution\" as I ON U.institution_id = I.institution_id WHERE U.user_mail = '#{params.mail}' AND U.user_password = '#{params.password}'", (err, res) ->
@@ -165,7 +194,7 @@ class Institution
     ).join ''
 
   get_institutions: (client, cb) ->
-    query = client.query "SELECT * FROM public.\"Institution\" ", (err, res) ->
+    query = client.query "SELECT * FROM public.\"Institution\" ORDER BY institution_points DESC ", (err, res) ->
       if not err
         cb? res.rows
       else
