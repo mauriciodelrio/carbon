@@ -26,7 +26,6 @@ module.exports = () ->
                 else
                   res.send status:'ERROR', data: response3.data
 
-
   all_students: (req, res) ->
     User.connect (client) ->
       User.get_students client, (response) ->
@@ -48,7 +47,6 @@ module.exports = () ->
         res.send status: 'OK', data: response
 
   signin: (req, res) ->
-    console.log req.body
     if req.body?.email and req.body?.password
       params =
         mail : req.body.email
@@ -57,7 +55,6 @@ module.exports = () ->
         User.get_user_by_mail client, params, (user) ->
           if user[0]?.user_id
             #limpiar sesiones anteriores acá
-            console.log "user 0 0000 0 0 0 0 0 ", user[0]
             Session.set user[0].user_id, {}, req, true, (session_id) ->
               if session_id?
                 User.clean_old_sessions_user client, user[0].user_id, session_id, (resp) ->

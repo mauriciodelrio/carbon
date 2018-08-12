@@ -13,3 +13,8 @@ module.exports = () ->
     Career.connect (client) ->
       Career.get_careers_by_departament client, req.params.departament_id, (careers) ->
         res.send status: 'OK', data: careers
+
+  get_career_by_id: (req, res) ->
+    Career.connect (client) ->
+      Career.get_career_by_id client, req.params.career_id, (career) ->
+        res.send status: 'OK', data: career.data

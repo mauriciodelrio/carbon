@@ -1,4 +1,5 @@
 pg = require 'pg'
+pg.defaults.poolSize = 200;
 async = require 'async'
 _ = require 'lodash'
 moment = require 'moment'
@@ -244,6 +245,15 @@ class Career
       else
         console.error err
         cb? err
+  
+  get_career_by_id: (client, params, cb) ->
+    query = client.query "SELECT * FROM public.\"Career\" WHERE career_id = '#{params}'", (err, res) ->
+      if not err
+        console.log "career", res.rows
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
+        cb? err
 
 class Departament
   constructor: () ->
@@ -263,6 +273,7 @@ class Departament
         cb? err
   
   get_departaments_by_institution: (client, params, cb) ->
+    console.log "params de depppppp", params
     query = client.query "SELECT * FROM public.\"Departament\" WHERE institution_id = '#{params}'", (err, res) ->
       if not err
         console.log "depts by institution", res.rows
@@ -409,6 +420,98 @@ class State #no añadiremos nada acá, solamente leeremos los estados soportados
         console.error err
         cb? err
 
+class Material
+  constructor: () ->
+
+  connect: (cb) ->
+    connectionString = process.env.DATABASE_URL or 'postgres://postgres:root@localhost:5432/carbon'
+    client = new (pg.Client)(connectionString)
+    client.connect()
+    cb? client
+
+  get_materials: (client, cb) ->
+    get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
+    joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
+    joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
+    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords}",  (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+  
+  get_material_by_id: (client, id, cb) ->
+    get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
+    joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
+    joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
+    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE M.material_id = '#{id}'", (err, res) ->
+      if not err
+        cb? res.rows[0]
+      else
+        console.error err
+        cb? err
+
+  get_materials_by_course: (client, id, cb) ->
+    get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
+    joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
+    joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
+    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE M.course_id = '#{id}'", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+  get_materials_by_name_or_description: (client, string, cb) ->
+    get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
+    joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
+    joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
+    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE M.name LIKE '%#{string}%' OR M.description LIKE '%#{string}%'", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+  get_materials_by_category: (client, category_id, cb) ->
+    get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
+    joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
+    joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
+    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MC.category_id = '#{category_id}'", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+  get_materials_by_keyword: (client, keyword_id, cb) ->
+    get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
+    joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
+    joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
+    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MK.keyword_id = '#{keyword_id}'", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
+
+  get_materials_by_typematerial: (client, typematerial_id, cb) ->
+    get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
+    joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
+    joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
+    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MTM.typematerial_id = '#{typematerial_id}'", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
 
 module.exports =
   User: User
@@ -421,3 +524,4 @@ module.exports =
   Typematerial: Typematerial
   Mimetype: Mimetype
   State: State
+  Material: Material
