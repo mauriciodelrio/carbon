@@ -61,7 +61,10 @@ ROUTES =
     get_materials_by_category: require("#{modulePath}/api/material")().get_materials_by_category
     get_materials_by_keyword: require("#{modulePath}/api/material")().get_materials_by_keyword
     get_materials_by_typematerial: require("#{modulePath}/api/material")().get_materials_by_typematerial
+    get_course_by_id: require("#{modulePath}/api/course")().get_course_by_id
     type_user: require("#{modulePath}/api/user")().type_user
+    find_user: require("#{modulePath}/api/user")().find_user
+    change_state_user: require("#{modulePath}/api/user")().change_state_user
 
 #API
 router.get '/api/institutions/all', ROUTES.api.all_institutions
@@ -78,9 +81,12 @@ router.get '/api/users/all', [], ROUTES.api.users
 router.get '/api/users/admin/all',[],ROUTES.api.administrators
 router.get '/api/users/students/all', [], ROUTES.api.students
 router.get '/api/users/editors/all', [], ROUTES.api.editors
+router.post '/api/users/find', [], ROUTES.api.find_user
+router.post '/api/user/:user_id/edit', [], ROUTES.api.change_state_user
 router.get '/api/departaments/:ins_id', [], ROUTES.api.get_departaments_by_institution
 router.get '/api/careers/:departament_id', [], ROUTES.api.get_careers_by_departament
 router.get '/api/courses/:career_id', [], ROUTES.api.get_courses_by_career
+router.get '/api/course/:course_id', [], ROUTES.api.get_course_by_id
 router.get '/api/career/:career_id', [], ROUTES.api.get_career_by_id
 router.get '/api/users/:user_id', [MIDDLEWARE.AUTH, MIDDLEWARE.USER_INFO], ROUTES.api.user_by_id
 router.get '/api/users/:user_id/type', [], ROUTES.api.type_user

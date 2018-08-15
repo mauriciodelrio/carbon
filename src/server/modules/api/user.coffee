@@ -26,6 +26,23 @@ module.exports = () ->
                 else
                   res.send status:'ERROR', data: response3.data
 
+  find_user: (req, res) ->
+    if req.body?.email
+      params =
+        email : req.body.email
+      User.connect (client) ->
+        User.get_user_by_email client, params, (response) ->
+          res.send status: 'OK', data: response
+
+  change_state_user: (req, res) ->
+    if req.body?.user_id and req.body.state?
+      params =
+        user_id : req.body.user_id
+        state : req.body.state
+      User.connect (client) ->
+        User.change_state_user_by_id client, params, (response) ->
+          res.send status: 'OK', data: response
+
   all_students: (req, res) ->
     User.connect (client) ->
       User.get_students client, (response) ->

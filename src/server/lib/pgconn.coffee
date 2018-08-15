@@ -94,6 +94,22 @@ class User
       else
         console.error err
         cb? err
+
+  change_state_user_by_id: (client, params, cb) ->
+    query = client.query "UPDATE public.\"User\" SET user_state = #{params.state} WHERE user_id = '#{params.user_id}' RETURNING *", (err, res) ->
+      if not err
+        console.log "change stateeee"
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
+
+  get_user_by_email: (client, params, cb) ->
+    query = client.query "SELECT * FROM public.\"User\" as U INNER JOIN public.\"Institution\" as I ON U.institution_id = I.institution_id WHERE U.user_mail LIKE '%#{params.email}%'", (err, res) ->
+      if not err
+        cb? res.rows
+      else
+        console.error err
+        cb? err
   
   get_session_by_id: (client, params, cb) ->
     date_now = moment().format("YYYY-MM-DD HH:mm")
@@ -295,6 +311,15 @@ class Course
     query = client.query "SELECT * FROM public.\"Course\" ", (err, res) ->
       if not err
         cb? res.rows
+      else
+        console.error err
+        cb? err
+
+  get_course_by_id: (client, params, cb) ->
+    query = client.query "SELECT * FROM public.\"Course\" WHERE course_id = '#{params}'", (err, res) ->
+      if not err
+        console.log "course", res.rows
+        cb? {status: 'OK', data: res.rows[0]}
       else
         console.error err
         cb? err

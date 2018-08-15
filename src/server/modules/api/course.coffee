@@ -13,3 +13,8 @@ module.exports = () ->
     Course.connect (client) ->
       Course.get_courses_by_career client, req.params.career_id, (courses) ->
         res.send status: 'OK', data: courses
+  
+  get_course_by_id: (req, res) ->
+    Course.connect (client) ->
+      Course.get_course_by_id client, req.params.course_id, (course) ->
+        res.send status: 'OK', data: course
