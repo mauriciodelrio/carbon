@@ -130,18 +130,24 @@ module.exports = () ->
         res.send status: 'OK', data: response
   
   create_student: (req, res) ->
-    console.log "req body student", req.body
-    params = 
-      lastname: _.get req, 'body.lastname', 'name'
-      birthday: _.get req, 'body.birthday', moment().format("YYYY-MM-DD")
-      email: _.get req, 'body.email', 'sample@sample.cl'
-      institution_id: _.get req, 'body.institution_id', '1'
-      name: _.get req, 'body.name', 'name'
-      password: _.get req, 'body.password', '1234'
-      gender: _.get req, 'body.gender', 'other'
-    User.connect (client) ->
-      User.create_student client, params, (response) ->
-        res.send status: 'OK', data: response
+    if req.body and req.body.user_lastname? and req.body.user_name? and req.body.user_birthday? and req.body.user_email? and req.body.institution_id? and req.body.user_password? and req.body.user_gender?
+      params = 
+        lastname: _.get req, 'body.user_lastname', ''
+        birthday: moment(_.get(req, 'body.user_birthday', '')).format("YYYY-MM-DD")
+        email: _.get req, 'body.user_email', ''
+        institution_id: _.get req, 'body.institution_id', ''
+        name: _.get req, 'body.user_name', ''
+        password: _.get req, 'body.user_password', ''
+        gender: _.get req, 'body.user_gender', ''
+      User.connect (client) ->
+        User.create_student client, params, (response) ->
+          if response.status is 'OK'
+            res.send status: 'OK', data: response.data
+          else
+            res.sendStatus 500
+    else
+      res.sendStatus 500
+
   
   create_editor: (req, res) ->
     console.log "req body editor", req.body

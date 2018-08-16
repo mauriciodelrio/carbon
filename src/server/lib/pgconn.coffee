@@ -123,12 +123,13 @@ class User
   create_student: (client, params, cb) ->
     date_now = moment().format("YYYY-MM-DD")
     id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    console.log("paramss student", params)
     query = client.query "INSERT INTO public.\"Student\" (user_lastname, user_birthday, user_mail, user_id, institution_id, user_state, student_files_uploaded, user_created_at, user_name, user_password, user_gender) VALUES ('#{params.lastname}', '#{params.birthday}', '#{params.email}', '#{id}', '#{params.institution_id}', #{true}, #{0}, '#{date_now}', '#{params.name}', '#{params.password}', '#{params.gender}') RETURNING *", (err, res) ->
       if not err
-        cb? res.rows
+        cb? {status: 'OK', data: res.rows}
       else
         console.error err
-        cb? err
+        cb? {status: 'ERROR', data: err}
 
   create_administrator: (client, params, cb) ->
     date_now = moment().format("YYYY-MM-DD")
