@@ -130,6 +130,7 @@ module.exports = () ->
         res.send status: 'OK', data: response
   
   create_student: (req, res) ->
+    console.log req.body
     if req.body and req.body.user_lastname? and req.body.user_name? and req.body.user_birthday? and req.body.user_email? and req.body.institution_id? and req.body.user_password? and req.body.user_gender?
       params = 
         lastname: _.get req, 'body.user_lastname', ''
