@@ -7,4 +7,5 @@ module.exports = () ->
   all_categories: (req, res) ->
     Category.connect (client) ->
       Category.get_categories client, (categories) ->
+        client.end()
         res.send status: 'OK', data: categories

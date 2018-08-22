@@ -7,4 +7,5 @@ module.exports = () ->
   all_mimetypes: (req, res) ->
     Mimetype.connect (client) ->
       Mimetype.get_mimetypes client, (mimetypes) ->
+        client.end()
         res.send status: 'OK', data: mimetypes

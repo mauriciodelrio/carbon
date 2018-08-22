@@ -1,5 +1,5 @@
 pg = require 'pg'
-pg.defaults.poolSize = 200;
+pg.defaults.poolSize = 300;
 async = require 'async'
 _ = require 'lodash'
 moment = require 'moment'
@@ -54,10 +54,7 @@ class User
 
   crypt_pass: (pass) ->
     new_pass = crypto.createHash('md5').update(pass).digest 'hex'
-    console.log "pass 1", new_pass
-    new_pass2 = crypto.createHash('md5').update(pass).digest 'hex'
-    console.log "pass 2",new_pass2
-    console.log new_pass == new_pass2
+    return new_pass
 
   get_user_by_id: (client, params, cb) -> #revisar esta funcion y queries
     query = client.query "SELECT * FROM public.\"User\" as U INNER JOIN public.\"Institution\" AS I ON U.institution_id = I.institution_id WHERE U.user_id = '#{params}'", (err, res) ->
@@ -87,8 +84,17 @@ class User
       else
         cb? {status: 'ERROR', data: err}
 
+  check_exist_user: (client, email, cb) ->
+    query = client.query "SELECT * FROM public.\"User\" as U WHERE U.user_mail = '#{email}'", (err, res) ->
+      console.log "rowssss", res.rows
+      if not err and res.rows.length > 0
+        cb? true
+      else
+        cb? false
+
   get_user_by_mail: (client, params, cb) ->
-    query = client.query "SELECT * FROM public.\"User\" as U INNER JOIN public.\"Institution\" as I ON U.institution_id = I.institution_id WHERE U.user_mail = '#{params.mail}' AND U.user_password = '#{params.password}'", (err, res) ->
+    console.log this.crypt_pass(params.password)
+    query = client.query "SELECT * FROM public.\"User\" as U INNER JOIN public.\"Institution\" as I ON U.institution_id = I.institution_id WHERE U.user_mail = '#{params.mail}' AND U.user_password = '#{this.crypt_pass(params.password)}'", (err, res) ->
       if not err
         cb? res.rows
       else
@@ -124,7 +130,7 @@ class User
     date_now = moment().format("YYYY-MM-DD")
     id = crypto.createHash('md5').update(this.hash()).digest 'hex'
     console.log("paramss student", params)
-    query = client.query "INSERT INTO public.\"Student\" (user_lastname, user_birthday, user_mail, user_id, institution_id, user_state, student_files_uploaded, user_created_at, user_name, user_password, user_gender) VALUES ('#{params.lastname}', '#{params.birthday}', '#{params.email}', '#{id}', '#{params.institution_id}', #{true}, #{0}, '#{date_now}', '#{params.name}', '#{params.password}', '#{params.gender}') RETURNING *", (err, res) ->
+    query = client.query "INSERT INTO public.\"Student\" (user_lastname, user_birthday, user_mail, user_id, institution_id, user_state, student_files_uploaded, user_created_at, user_name, user_password, user_gender) VALUES ('#{params.lastname}', '#{params.birthday}', '#{params.email}', '#{id}', '#{params.institution_id}', #{true}, #{0}, '#{date_now}', '#{params.name}', '#{this.crypt_pass(params.password)}', '#{params.gender}') RETURNING *", (err, res) ->
       if not err
         cb? {status: 'OK', data: res.rows}
       else
@@ -134,7 +140,7 @@ class User
   create_administrator: (client, params, cb) ->
     date_now = moment().format("YYYY-MM-DD")
     id = crypto.createHash('md5').update(this.hash()).digest 'hex'
-    query = client.query "INSERT INTO public.\"Administrator\" (administrator_contact_email, user_lastname, user_birthday, user_mail, user_id, administrator_contact_number, institution_id, user_state, user_created_at, user_name, user_password, user_gender, administrator_cargo) VALUES ('#{params.contact_email}', '#{params.lastname}', '#{params.birthday}', '#{params.email}', '#{id}', '#{params.contact_number}', '#{params.institution_id}', #{true}, '#{date_now}', '#{params.name}', '#{params.password}', '#{params.gender}', '#{params.cargo}') RETURNING *", (err, res) ->
+    query = client.query "INSERT INTO public.\"Administrator\" (administrator_contact_email, user_lastname, user_birthday, user_mail, user_id, administrator_contact_number, institution_id, user_state, user_created_at, user_name, user_password, user_gender, administrator_cargo) VALUES ('#{params.contact_email}', '#{params.lastname}', '#{params.birthday}', '#{params.email}', '#{id}', '#{params.contact_number}', '#{params.institution_id}', #{true}, '#{date_now}', '#{params.name}', '#{this.crypt_pass(params.password)}', '#{params.gender}', '#{params.cargo}') RETURNING *", (err, res) ->
       if not err
         cb? res.rows
       else
@@ -144,7 +150,7 @@ class User
   create_editor: (client, params, cb) ->
     date_now = moment().format("YYYY-MM-DD")
     id = crypto.createHash('md5').update(this.hash()).digest 'hex'
-    query = client.query "INSERT INTO public.\"Editor\" (editor_contact_email, user_lastname, user_birthday, user_mail, user_id, editor_contact_number, institution_id, user_state, user_created_at, user_name, user_password, user_gender, editor_cargo) VALUES ('#{params.contact_email}', '#{params.lastname}', '#{params.birthday}', '#{params.email}', '#{id}', '#{params.contact_number}', '#{params.institution_id}', #{true}, '#{date_now}', '#{params.name}', '#{params.password}', '#{params.gender}', '#{params.cargo}') RETURNING *", (err, res) ->
+    query = client.query "INSERT INTO public.\"Editor\" (editor_contact_email, user_lastname, user_birthday, user_mail, user_id, editor_contact_number, institution_id, user_state, user_created_at, user_name, user_password, user_gender, editor_cargo) VALUES ('#{params.contact_email}', '#{params.lastname}', '#{params.birthday}', '#{params.email}', '#{id}', '#{params.contact_number}', '#{params.institution_id}', #{true}, '#{date_now}', '#{params.name}', '#{this.crypt_pass(params.password)}', '#{params.gender}', '#{params.cargo}') RETURNING *", (err, res) ->
       if not err
         cb? res.rows
       else
@@ -459,8 +465,7 @@ class Material
     get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
     joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
     joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
-    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
-    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords}",  (err, res) ->
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial}",  (err, res) ->
       if not err
         cb? res.rows
       else
@@ -538,7 +543,14 @@ class Material
       else
         console.error err
         cb? err
-
+  
+  change_state_material_by_id: (client, params, cb) ->
+    query = client.query "UPDATE public.\"Material\" SET state_id = #{params.state_id} WHERE material_id = '#{params.material_id}' RETURNING *", (err, res) ->
+      if not err   
+        console.log "change stateeee"
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
 module.exports =
   User: User
   Institution: Institution

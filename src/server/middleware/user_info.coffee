@@ -15,6 +15,7 @@ middleware = (req, res, next) ->
       User.connect (client) ->
         console.log "session user idddd", req.session.user_id
         User.get_user_by_id client, req.session.user_id, (user) ->
+          client.end()
           if user
             console.log "userrrrrr", user
             user_data = user[0]

@@ -14,14 +14,17 @@ module.exports = () ->
     User.connect (client) ->
       User.get_admin_by_id client, req.params.user_id, (response) ->
         if response.status is 'OK' and response?.data
+          client.end()
           res.send status: 'OK', data: response.data
         else
           User.get_editor_by_id client, req.params.user_id, (response2) ->
             if response2.status is 'OK' and response2?.data
+              client.end()
               res.send status: 'OK', data: response2.data
             else
               User.get_student_by_id client, req.params.user_id, (response3) ->
                 if response3.status is 'OK' and response3?.data
+                  client.end()
                   res.send status: 'OK', data: response3.data
                 else
                   res.send status:'ERROR', data: response3.data
@@ -32,6 +35,7 @@ module.exports = () ->
         email : req.body.email
       User.connect (client) ->
         User.get_user_by_email client, params, (response) ->
+          client.end()
           res.send status: 'OK', data: response
 
   change_state_user: (req, res) ->
@@ -46,21 +50,25 @@ module.exports = () ->
   all_students: (req, res) ->
     User.connect (client) ->
       User.get_students client, (response) ->
+        client.end()
         res.send status: 'OK', data: response
 
   all_admins: (req, res)->
     User.connect (client) ->
       User.get_admins client, (response) ->
+        client.end()
         res.send status: 'OK', data: response
   
   all_editors: (req, res)->
     User.connect (client) ->
       User.get_editors client, (response) ->
+        client.end()
         res.send status: 'OK', data: response
 
   user_id: (req, res) ->
     User.connect (client) ->
       User.get_user_by_id client, req.params.user_id, (response) ->
+        client.end()
         res.send status: 'OK', data: response
 
   signin: (req, res) ->
@@ -83,6 +91,7 @@ module.exports = () ->
                   Institution.get_points_in_institution client, '1', (points) ->
                     if points.status is 'OK' and points.data?
                       Institution.set_points_in_institution client, '1', points.data.sum, (resp_points) ->
+                        client.end()
                     else
                       console.error resp
                 console.log "---- Seteo su session ----", session_id
@@ -92,6 +101,7 @@ module.exports = () ->
                   User.count_sessions client, user[0].user_id, (result) ->
                     console.log "cantidad de sesiones", result
                   User.get_user_session client, session_id, user[0].user_id, (session) ->
+                    client.end()
                     res.send status: 'OK', data: {user: res.locals.USER, session: session}
               else
                 console.error "EMPTY RESPONSE SESSION"
@@ -126,8 +136,14 @@ module.exports = () ->
       contact_number: _.get req, 'body.contact_number', '+56912345678'
       cargo: _.get req, 'body.cargo', 'administrator'
     User.connect (client) ->
-      User.create_administrator client, params, (response) ->
-        res.send status: 'OK', data: response
+      User.check_exist_user client, params.email, (exist) ->
+        if exist
+          client.end()
+          res.send status: 'EXIST', data: 'El email ya se encuentra registrado en sistema'
+        else
+          User.create_administrator client, params, (response) ->
+            client.end()
+            res.send status: 'OK', data: response
   
   create_student: (req, res) ->
     console.log req.body
@@ -141,11 +157,18 @@ module.exports = () ->
         password: _.get req, 'body.user_password', ''
         gender: _.get req, 'body.user_gender', ''
       User.connect (client) ->
-        User.create_student client, params, (response) ->
-          if response.status is 'OK'
-            res.send status: 'OK', data: response.data
+        User.check_exist_user client, params.email, (exist) ->
+          console.log "existtttt", exist
+          if exist
+            client.end()
+            res.send status: 'EXIST', data: 'El email ya se encuentra registrado en sistema'
           else
-            res.sendStatus 500
+            User.create_student client, params, (response) ->
+              client.end()
+              if response.status is 'OK'
+                res.send status: 'OK', data: response.data
+              else
+                res.sendStatus 500
     else
       res.sendStatus 500
 
@@ -164,5 +187,11 @@ module.exports = () ->
       contact_number: _.get req, 'body.contact_number', '+56912345678'
       cargo: _.get req, 'body.cargo', 'editor'
     User.connect (client) ->
-      User.create_editor client, params, (response) ->
-        res.send status: 'OK', data: response
+      User.check_exist_user client, params.email, (exist) ->
+        if exist
+          client.end()
+          res.send status: 'EXIST', data: 'El email ya se encuentra registrado en sistema'
+        else
+          User.create_editor client, params, (response) ->
+            client.end()
+            res.send status: 'OK', data: response

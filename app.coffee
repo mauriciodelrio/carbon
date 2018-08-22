@@ -65,6 +65,7 @@ ROUTES =
     type_user: require("#{modulePath}/api/user")().type_user
     find_user: require("#{modulePath}/api/user")().find_user
     change_state_user: require("#{modulePath}/api/user")().change_state_user
+    change_state_material: require("#{modulePath}/api/material")().change_state_material
 
 #API
 router.get '/api/institutions/all', ROUTES.api.all_institutions
@@ -92,6 +93,7 @@ router.get '/api/users/:user_id', [MIDDLEWARE.AUTH, MIDDLEWARE.USER_INFO], ROUTE
 router.get '/api/users/:user_id/type', [], ROUTES.api.type_user
 router.get '/api/materials/search', [], ROUTES.api.get_materials_by_name_or_description
 router.get '/api/material/:material_id', [], ROUTES.api.get_material_by_id
+router.post '/api/material/:material_id/edit', [], ROUTES.api.change_state_material
 router.get '/api/materials/:course_id', [], ROUTES.api.get_materials_by_course
 router.get '/api/materials/category/:category_id', [], ROUTES.api.get_materials_by_category
 router.get '/api/materials/keyword/:keyword_id', [], ROUTES.api.get_materials_by_keyword
