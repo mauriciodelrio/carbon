@@ -19,6 +19,7 @@
     "crypto": "^1.0.1",
     "express": "^4.16.1",
     "express-session": "^1.15.6",
+    "googleapis": "^27.0.0",
     "ip": "^1.1.5",
     "lodash": "^4.17.4",
     "maxmind": "^0.6.0",

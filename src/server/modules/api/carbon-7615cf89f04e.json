@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "carbon-214221",
+  "private_key_id": "7615cf89f04ee26e383cdd0e978159cac361c5c2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDMIY1kgJ+ukFrF\nUrgByGVaRt04itYkyrAAZ0bT7kEFJSToMtvN/wv92Pi4iFcp8rxEZp21/7Zp/oja\nYeJPtQhCWZSRR5LvntGWrCoVSFrairmWRsppA5uW4tC2///hBH3Woybzj+ziLsQA\nSgni7Ej2m2sxgC+Jmu4h0kToleIxRshNshFOw9dTU05uJHHfcjt37efq5BS26Z7d\nabCdFHNeIz7LKGsVxAGvBQNbEyVdP2NKQVzReclgQKDPwp9Iqw9RkbOYxHPQCisA\nvs5Bsy0nZzYvYNtDgXsqkhKy6+9+MgB1SKRaulwkl0fry4+XPmNJH+uqJtiknyHi\nLuxTeOsVAgMBAAECggEAEVYwKf76kNrVuriBxDT+1qH6G9k+wrUsKXyb+Vfc0dEL\nx2S6Yk5s+Ew7I4EA1iE1eCG290QWe/4QJWv2yoo3f1sYURZhFlTIvCE3GcOhY7ow\ndODiQ/T4e+Ibk88+LiAxh88nebwZhEQwhU3EdS9YKwmcGwImB2vPGbRAAfjo0wJn\nHy1OlPVbF4nkmcG5TexN2UhXsYuRfxqtJsuRy9dt8cNXtBxbBVP06ChH4zD4/Bgc\nuMG2fRs34OR6vJXy6MPvD8zqhJQVv/20AyttKM7aQZq52lo0rXPN2V/nDVIgdSh9\nFf/LJYznwxq+bwYUSdgRgksNWx41hn0m2onmSqpiQQKBgQDnz2SijjYON7UtdOwt\ncLyJyiDHTsAGv4ToXt5q1wFlx47cf9Wk2klx2s5yAafgVy1JvTDBBtkkvNAxjJln\nudGUdF3qd3a0gfyH1J5KEEhEhkR5v/Vh/idC3Af/JNpiY3BHmE6zdPZ/tUmPGS8e\nmwTBu7PFWTUly093ujcolV/NzQKBgQDhbryn9LagIetkO2+As0ITqgVg6f7vlGhJ\n4cPRQNIevCSk6wKaAEk+95LUJ/t/S2DlK6FuT+4kllxOd0lAcqmnlP5TmAgBiDbY\n8dVBfdu6VsPUlAcpEuveGvIvpZAitVfs/1bLlLjar8NlCH3u60h4gnM/smDho2Ap\nHM2BHjGKaQKBgQDR3My67gy6Kmz4TlZTfTDzfe7XAdCPS2xEAz9Rcn1ta5FGxuTg\nbk73qKQmSqF1VPdHPuSYnF6SB+5kLWnkojG/OOqdjrIFEXlSb4cufjcu8m+j2cmJ\ngdKBkTocH30mfef0qUr25PkU/UcvKhmil61ix1AlZnHbWYkEV64AK9ukMQKBgCwJ\nN60PboVFWvgPbC6V1biFo9tUmkoukVitU1US9niug/H7Plza5XP5ZKMw1D3/eYQK\ny9QCpSBchteFEbgXLfDgd/XYYuf5tc0XIHNUpJF31XU3HVb2rUCLvvdzvf4psm1H\nS6sk+B8v6llYGVGMgHGZ+e1daPNquKQPTk2EmmTRAoGAHVGUOIorFX1cmLEYP5fa\nEjpllaACWPAf58vnqwzLFyeNpdZ1FB87NkTThqeD9ajKFhvut0360aYMd1VhiD9S\no2H9yYOAuRp//B40Hp9sFQLoi+973z8MQcRyAXHKn40VlLgE6P5dI+B//z+YYesh\n3fTxm9JFDqdeugPBOJy0rGc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "carbon@carbon-214221.iam.gserviceaccount.com",
+  "client_id": "116060283413629144269",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/carbon%40carbon-214221.iam.gserviceaccount.com"
+}

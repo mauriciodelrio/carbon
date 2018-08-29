@@ -461,6 +461,12 @@ class Material
     client.connect()
     cb? client
 
+  hash: (length = 32) ->
+    charset = ''
+    Array.apply(0, Array(length)).map( ->
+      ((charset) -> charset.charAt Math.floor(Math.random() * charset.length)) 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    ).join ''
+
   get_materials: (client, cb) ->
     get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
     joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
@@ -477,7 +483,7 @@ class Material
     joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
     joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
     joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
-    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE M.material_id = '#{id}'", (err, res) ->
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE M.material_id = '#{id}' AND M.state_id = '1'", (err, res) ->
       if not err
         cb? res.rows[0]
       else
@@ -488,8 +494,7 @@ class Material
     get_material = "SELECT * FROM public.\"Material\" as M INNER JOIN public.\"Student\" as S ON M.student_id = S.user_id INNER JOIN public.\"Course\" as C ON M.course_id = C.course_id"
     joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
     joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
-    joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
-    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE M.course_id = '#{id}'", (err, res) ->
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} WHERE M.course_id = '#{id}' AND M.state_id = '1'", (err, res) ->
       if not err
         cb? res.rows
       else
@@ -501,7 +506,7 @@ class Material
     joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
     joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
     joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
-    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE M.name LIKE '%#{string}%' OR M.description LIKE '%#{string}%'", (err, res) ->
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE M.name LIKE '%#{string}%' OR M.description LIKE '%#{string}%' AND M.state_id = '1'", (err, res) ->
       if not err
         cb? res.rows
       else
@@ -513,7 +518,7 @@ class Material
     joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
     joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
     joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
-    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MC.category_id = '#{category_id}'", (err, res) ->
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MC.category_id = '#{category_id}' AND M.state_id = '1'", (err, res) ->
       if not err
         cb? res.rows
       else
@@ -525,7 +530,7 @@ class Material
     joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
     joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
     joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
-    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MK.keyword_id = '#{keyword_id}'", (err, res) ->
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MK.keyword_id = '#{keyword_id}' AND M.state_id = '1'", (err, res) ->
       if not err
         cb? res.rows
       else
@@ -537,7 +542,7 @@ class Material
     joins_categories = "INNER JOIN public.\"Materialcategory\" as MC ON M.material_id = MC.material_id INNER JOIN public.\"Category\" as CAT ON MC.category_id = CAT.category_id"
     joins_typematerial = "INNER JOIN public.\"Materialtypematerial\" as MTM ON M.material_id = MTM.material_id INNER JOIN public.\"Typematerial\" as TM ON MTM.typematerial_id = TM.typematerial_id"
     joins_keywords = "INNER JOIN public.\"Materialkeyword\" as MK ON M.material_id = MK.material_id INNER JOIN public.\"Keyword\" as K ON MK.keyword_id = K.keyword_id"
-    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MTM.typematerial_id = '#{typematerial_id}'", (err, res) ->
+    query = client.query "#{get_material} #{joins_categories} #{joins_typematerial} #{joins_keywords} WHERE MTM.typematerial_id = '#{typematerial_id}' AND M.state_id = '1'", (err, res) ->
       if not err
         cb? res.rows
       else
@@ -551,6 +556,69 @@ class Material
         cb? {status: 'OK', data: res.rows[0]}
       else
         console.error err
+
+  create_material: (client, params, cb) ->
+    date_now = moment().format("YYYY-MM-DD")
+    id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    console.log("paramss material", params)
+    query = client.query "INSERT INTO public.\"Material\" (material_id, name, created_at, state_id, course_id, description, student_id, path, mimetype_id) VALUES ('#{id}', '#{params.name}', '#{date_now}', '#{params.state_id}', '#{params.course_id}', '#{params.description}', '#{params.student_id}', '#{params.path}', '#{params.mimetype_id}') RETURNING *", (err, res) ->
+      if not err
+        console.log "creeeeee el material, sin error", res.rows
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
+        cb? {status: 'ERROR', data: err}
+  
+  create_material_category: (client, params, cb) ->
+    id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    console.log("paramss material category", params)
+    query = client.query "INSERT INTO public.\"Materialcategory\" (material_id, category_id, materialcategory_id) VALUES ('#{params.material_id}', '#{params.category_id}', '#{id}') RETURNING *", (err, res) ->
+      if not err
+        console.log "creeeeee la categoria del material, sin error", res.rows
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
+        cb? {status: 'ERROR', data: err}
+
+  create_material_type: (client, params, cb) ->
+    id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    console.log("paramss material type", params)
+    query = client.query "INSERT INTO public.\"Materialtypematerial\" (material_id, typematerial_id, materialtypematerial_id) VALUES ('#{params.material_id}', '#{params.typematerial_id}', '#{id}') RETURNING *", (err, res) ->
+      if not err
+        console.log "creeeeee el tipo del material, sin error", res.rows
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
+        cb? {status: 'ERROR', data: err}
+
+  create_material_keyword: (client, params, cb) ->
+    id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    console.log("paramss material keyword", params)
+    query = client.query "INSERT INTO public.\"Materialkeyword\" (material_id, keyword_id, materialkeyword_id) VALUES ('#{params.material_id}', '#{params.keyword_id}', '#{id}') RETURNING *", (err, res) ->
+      if not err
+        console.log "creeeeee el tipo del material, sin error", res.rows
+        cb? {status: 'OK', data: res.rows[0]}
+      else
+        console.error err
+        cb? {status: 'ERROR', data: err}
+
+  create_material_keyword_new: (client, params, cb) ->
+    id = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    id2 = crypto.createHash('md5').update(this.hash()).digest 'hex'
+    console.log("paramss material keyword new", params)
+    query = client.query "INSERT INTO public.\"Keyword\" (keyword_id, keyword_name) VALUES ('#{id}', '#{params.keyword_name}') RETURNING *", (err, res) ->
+      if not err
+        query2 = client.query "INSERT INTO public.\"Materialkeyword\" (material_id, keyword_id, materialkeyword_id) VALUES ('#{params.material_id}', '#{id}', '#{id2}') RETURNING *", (err, res2) ->
+          if not err
+            console.log "creeeeee el tipo del material, sin error y nuevo", res2.rows
+            cb? {status: 'OK', data: res2.rows[0]}
+          else
+            console.error err
+            cb? {status: 'ERROR', data: err}
+      else
+        console.error err
+        cb? {status: 'ERROR', data: err}
+
 module.exports =
   User: User
   Institution: Institution

@@ -56,3 +56,52 @@ module.exports = () ->
         Material.change_state_material_by_id client, params, (response) ->
           client.end()
           res.send status: 'OK', data: response
+
+  create_material: (req, res) ->
+    Material.connect (client) ->
+      Material.create_material client, req.body.material, (response) ->
+        client.end()
+        if response.status is 'OK' and response.data
+          console.log "he creado el material", response.data
+          res.send status: 'OK', data: response.data
+        else
+          res.sendStatus 500
+  
+  create_material_category: (req, res) ->
+    Material.connect (client) ->
+      Material.create_material_category client, req.body, (response) ->
+        client.end()
+        if response.status is 'OK' and response.data
+          console.log "he creado la categoria del material", response.data
+          res.send status: 'OK', data: response.data
+        else
+          res.sendStatus 500
+
+  create_material_type: (req, res) ->
+    Material.connect (client) ->
+      Material.create_material_type client, req.body, (response) ->
+        client.end()
+        if response.status is 'OK' and response.data
+          console.log "he creado el tipo del material", response.data
+          res.send status: 'OK', data: response.data
+        else
+          res.sendStatus 500
+  
+  create_material_keyword: (req, res) ->
+    Material.connect (client) ->
+      if req.body.keyword_new
+        Material.create_material_keyword_new client, req.body, (response) ->
+          client.end()
+          if response.status is 'OK' and response.data
+            console.log "he creado la palabra clave del material y creada la palabra clave", response.data
+            res.send status: 'OK', data: response.data
+          else
+            res.sendStatus 500
+      else
+        Material.create_material_keyword client, req.body, (response) ->
+          client.end()
+          if response.status is 'OK' and response.data
+            console.log "he creado la palabra clave del material", response.data
+            res.send status: 'OK', data: response.data
+          else
+            res.sendStatus 500

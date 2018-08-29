@@ -66,6 +66,13 @@ ROUTES =
     find_user: require("#{modulePath}/api/user")().find_user
     change_state_user: require("#{modulePath}/api/user")().change_state_user
     change_state_material: require("#{modulePath}/api/material")().change_state_material
+    create_material: require("#{modulePath}/api/material")().create_material
+    create_material_category: require("#{modulePath}/api/material")().create_material_category
+    create_material_type: require("#{modulePath}/api/material")().create_material_type
+    create_material_keyword: require("#{modulePath}/api/material")().create_material_keyword
+    authorize: require("#{modulePath}/api/drive")().authorize
+    uploadFile: require("#{modulePath}/api/drive")().uploadFile
+    downloadFile: require("#{modulePath}/api/drive")().downloadFile
 
 #API
 router.get '/api/institutions/all', ROUTES.api.all_institutions
@@ -92,6 +99,10 @@ router.get '/api/career/:career_id', [], ROUTES.api.get_career_by_id
 router.get '/api/users/:user_id', [MIDDLEWARE.AUTH, MIDDLEWARE.USER_INFO], ROUTES.api.user_by_id
 router.get '/api/users/:user_id/type', [], ROUTES.api.type_user
 router.get '/api/materials/search', [], ROUTES.api.get_materials_by_name_or_description
+router.post '/api/material/new', [], ROUTES.api.create_material
+router.post '/api/material/category/new', [], ROUTES.api.create_material_category
+router.post '/api/material/typematerial/new', [], ROUTES.api.create_material_type
+router.post '/api/material/keyword/new', [], ROUTES.api.create_material_keyword
 router.get '/api/material/:material_id', [], ROUTES.api.get_material_by_id
 router.post '/api/material/:material_id/edit', [], ROUTES.api.change_state_material
 router.get '/api/materials/:course_id', [], ROUTES.api.get_materials_by_course
@@ -106,6 +117,11 @@ router.post '/api/signout', [], ROUTES.api.signout
 router.post '/api/student/new', [], ROUTES.api.create_student
 router.post '/api/administrator/new', [], ROUTES.api.create_administrator
 router.post '/api/editor/new', [], ROUTES.api.create_editor
+#Drive api
+router.get '/api/drive/auth', [], ROUTES.api.authorize #only testing
+router.post '/api/drive/upload', [], ROUTES.api.uploadFile
+router.get '/api/drive/download', [], ROUTES.api.downloadFile
+
 app.use '/', router
 # App
 app.listen 7070, -> console.log 'Backend running on port 7070! http://localhost:7070'
